@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Something for You 🌸</title>
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    color: #3d3540;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(255,255,255,.9), transparent 28%),
+      radial-gradient(circle at 85% 80%, rgba(255,225,235,.65), transparent 30%),
+      linear-gradient(135deg, #fff7fa, #f9f3ff 48%, #fffaf2);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .petal {
+    position: fixed;
+    top: -30px;
+    font-size: 18px;
+    opacity: .55;
+    animation: fall linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); }
+  }
+
+  .screen {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 28px 18px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .intro {
+    text-align: center;
+    max-width: 650px;
+    animation: floatIn 1.2s ease both;
+  }
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tiny { letter-spacing: 3px; text-transform: uppercase; font: 12px Arial, sans-serif; opacity: .55; }
+  h1 {
+    font-size: clamp(42px, 10vw, 76px);
+    font-weight: 400;
+    line-height: .95;
+    margin: 18px 0;
+    color: #5b4054;
+  }
+  .intro p { font-size: 18px; line-height: 1.7; opacity: .78; }
+
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 15px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    background: #5b4054;
+    color: white;
+    box-shadow: 0 12px 35px rgba(91,64,84,.22);
+    transition: .25s ease;
+  }
+  button:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(91,64,84,.3); }
+  button:disabled { opacity: .6; cursor: wait; transform: none; }
+
+  #letter { display: none; }
+  .paper {
+    width: min(850px, 94vw);
+    margin: 60px auto;
+    padding: clamp(28px, 6vw, 70px);
+    background: rgba(255,255,255,.78);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.9);
+    border-radius: 28px;
+    box-shadow: 0 25px 80px rgba(88,57,78,.12);
+  }
+
+  .eyebrow {
+    text-align: center;
+    font: 12px Arial, sans-serif;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: .5;
+  }
+
+  .paper h2 {
+    text-align: center;
+    font-size: clamp(34px, 7vw, 58px);
+    font-weight: 400;
+    margin: 12px 0 45px;
+    color: #65465c;
+  }
+
+  .opening {
+    font-size: 21px;
+    line-height: 1.75;
+    text-align: center;
+    margin-bottom: 45px;
+  }
+
+  .traits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 13px;
+    margin: 25px 0 55px;
+  }
+  .trait {
+    padding: 17px 18px;
+    border-radius: 16px;
+    background: rgba(255,241,246,.72);
+    border: 1px solid rgba(145,92,117,.09);
+    line-height: 1.45;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: .6s ease;
+  }
+  .trait.show { opacity: 1; transform: translateY(0); }
+
+  .message {
+    font-size: 18px;
+    line-height: 1.9;
+  }
+  .message p { margin: 0 0 27px; }
+
+  .highlight {
+    margin: 45px 0;
+    padding: 28px;
+    text-align: center;
+    border-top: 1px solid rgba(91,64,84,.12);
+    border-bottom: 1px solid rgba(91,64,84,.12);
+    font-size: 23px;
+    line-height: 1.6;
+    color: #704e64;
+  }
+
+  .ending {
+    text-align: center;
+    margin-top: 55px;
+  }
+  .ending .sexy {
+    font-size: clamp(25px, 6vw, 38px);
+    margin-top: 18px;
+    color: #70425c;
+  }
+  .signature {
+    margin-top: 45px;
+    font-size: 19px;
+    font-style: italic;
+  }
+
+  .music {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 5;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    display: none;
+    place-items: center;
+    font-size: 19px;
+    background: rgba(91,64,84,.9);
+  }
+
+  .note {
+    text-align: center;
+    font: 11px Arial, sans-serif;
+    opacity: .45;
+    margin-top: 35px;
+  }
+
+  #yt-wrap {
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    width: 200px;
+    height: 200px;
+  }
+
+  @media (max-width: 600px) {
+    .paper { padding: 28px 22px; border-radius: 22px; }
+    .traits { grid-template-columns: 1fr; }
+    .opening, .message { font-size: 17px; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     🎵 MUSIC: SET YOUR YOUTUBE VIDEO IN THE SCRIPT AT THE BOTTOM
+     =========================================================
+     Find this line near the bottom of the file:
+       const VIDEO_ID = "YOUTUBE_VIDEO_ID";
+     and replace YOUTUBE_VIDEO_ID with your video's ID.
+
+     The ID is the part after "v=" in the YouTube link:
+       https://www.youtube.com/watch?v=abc123XYZ  ->  abc123XYZ
+       https://youtu.be/abc123XYZ                 ->  abc123XYZ
+     ========================================================= -->
+
+<div id="petals"></div>
+
+<section class="screen" id="intro">
+  <div class="intro">
+    <div class="tiny">Like a normal October but little more awesome</div>
+    <h1>Just for you,<br> Aanchu 🌸</h1>
+    <p>
+      No special occasion. No reason.<br>
+      Just a small reminder that some people deserve to feel special
+      simply because they are who they are.
+    </p>
+    <button id="openBtn" onclick="openLetter()" disabled>Loading… 🌸</button>
+  </div>
+</section>
+
+<section id="letter">
+  <div class="paper">
+    <div class="eyebrow">A little appreciation</div>
+    <h2>First of all…</h2>
+
+    <div class="opening">
+      I like you to the extreme — exactly the way you are. 🌸
+    </div>
+
+    <div class="eyebrow">More than one trait of yours 👇</div>
+
+    <div class="traits">
+      <div class="trait">Putting in that little extra effort for the person you like</div>
+      <div class="trait">Your presence of mind</div>
+      <div class="trait">Your loyalty</div>
+      <div class="trait">Always keeping your family in the forefront</div>
+      <div class="trait">No alcohol, no cigarettes</div>
+      <div class="trait">Being a little playful with the person you like</div>
+      <div class="trait">You enjoy deep conversations</div>
+      <div class="trait">You are not a trickster girl like many others</div>
+      <div class="trait">You are adorable 🥰</div>
+      <div class="trait">You become the sunshine in the other person's life once you start liking them</div>
+      <div class="trait">You are honest about your feelings and your moods</div>
+      <div class="trait">Charismatic</div>
+      <div class="trait">Vivacious</div>
+    </div>
+
+    <div class="message">
+      <p>
+        Okay, so there are many more… but let me start writing a beautiful
+        paragraph to make you feel special on a random day of yours —
+        to make even one of those painful period days a little more special
+        and soothing. 🌸
+      </p>
+
+      <p>
+        Today, one random Instagram reel made me realise something:
+        why not make someone's day a little more special than usual?
+      </p>
+
+      <div class="highlight">
+        How can I not admire all the traits of someone who is,
+        in her own beautiful way, an <strong>angel in disguise?</strong>
+      </div>
+
+      <p>
+        The person I was thinking about when I made that list is
+        <strong>you, my friend, Aanchu.</strong> 🌸
+      </p>
+
+      <p>
+        As I thought about each of your qualities and the little traits
+        that show themselves in the way you live your life, the above list
+        just came to my mind.
+      </p>
+
+      <p>
+        Putting God first in your life says so much about why you live each
+        day with so much love, warmth, and kindness towards others.
+        There is something genuinely beautiful about the way you care,
+        and the way you make people feel valued.
+      </p>
+
+      <p>
+        I am truly blessed in many, many more ways to have you in my life.
+        And maybe I don't say it often enough, but your presence does make
+        a difference. 🌸
+      </p>
+    </div>
+
+    <div class="ending">
+      <div>So, on this completely random day,</div>
+      <div><strong>I just wanted to remind you that you are special.</strong></div>
+      <br>
+      <div>Have a great day!! 🌸</div>
+
+      <div class="sexy">
+        Oh yes… I almost forgot to add one more trait that I love. 😌<br>
+        <strong>Chiseled. And downright sexy! 🔥</strong>
+      </div>
+
+      <div class="signature">
+        With lots of warmth and care,<br>
+        <strong>Amar</strong>
+      </div>
+    </div>
+
+    <div class="note">Made on a completely random day, for someone who deserves it.</div>
+  </div>
+</section>
+
+<button class="music" id="musicBtn" onclick="toggleMusic()" aria-label="Toggle music">♫</button>
+
+<!-- Hidden YouTube player (the music) -->
+<div id="yt-wrap"><div id="yt-player"></div></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+// 🎵 PUT YOUR YOUTUBE VIDEO ID HERE
+const VIDEO_ID = "wW2PREGaFgQ";
+const START_AT = 0;   // seconds to skip at the start, e.g. 30 = start at 0:30
+
+let player;
+let playerReady = false;
+
+function enableOpenButton() {
+  const b = document.getElementById("openBtn");
+  if (!b.disabled) return;
+  b.disabled = false;
+  b.textContent = "Tap to open ✨";
+}
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player("yt-player", {
+    width: 200,
+    height: 200,
+    videoId: VIDEO_ID,
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      loop: 1,
+      playlist: VIDEO_ID,   // needed for looping
+      start: START_AT,
+      playsinline: 1
+    },
+    events: {
+      onReady: () => {
+        playerReady = true;
+        player.setVolume(35);
+        enableOpenButton();
+      },
+      onError: () => {
+        // Video can't be played here — still let her open the letter
+        enableOpenButton();
+      }
+    }
+  });
+}
+
+// Safety net: if YouTube is slow or blocked, unlock the button after 8 seconds anyway
+setTimeout(enableOpenButton, 8000);
+
+function openLetter() {
+  document.getElementById("intro").style.display = "none";
+  document.getElementById("letter").style.display = "block";
+  document.getElementById("musicBtn").style.display = "grid";
+
+  if (playerReady) player.playVideo();
+
+  window.scrollTo({top: 0, behavior: "smooth"});
+
+  const traits = document.querySelectorAll(".trait");
+  traits.forEach((el, i) => {
+    setTimeout(() => el.classList.add("show"), 250 + i * 110);
+  });
+}
+
+function toggleMusic() {
+  const btn = document.getElementById("musicBtn");
+  if (!playerReady) return;
+
+  if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+    player.pauseVideo();
+    btn.textContent = "🔇";
+  } else {
+    player.playVideo();
+    btn.textContent = "♫";
+  }
+}
+
+// Gentle falling petals
+const symbols = ["✦", "·", "❀", "✧"];
+for (let i = 0; i < 22; i++) {
+  const p = document.createElement("div");
+  p.className = "petal";
+  p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+  p.style.left = Math.random() * 100 + "vw";
+  p.style.animationDuration = (8 + Math.random() * 10) + "s";
+  p.style.animationDelay = (-Math.random() * 15) + "s";
+  p.style.fontSize = (10 + Math.random() * 13) + "px";
+  document.getElementById("petals").appendChild(p);
+}
+</script>
+
+</body>
+</html>
